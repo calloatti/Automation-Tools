@@ -1,0 +1,14 @@
+﻿{
+    "IlluminationColorSpec":  {
+                                  "Id":  "Calloatti.Raspberry",
+                                  "Color":  {
+                                                "g":  0.14,
+                                                "r":  1,
+                                                "b":  0.39,
+                                                "a":  1
+                                            }
+                              },
+    "IlluminationPresetSpec":  {
+                                   "Order":  10240
+                               }
+}

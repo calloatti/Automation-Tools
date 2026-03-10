@@ -1,0 +1,14 @@
+﻿{
+    "IlluminationColorSpec":  {
+                                  "Id":  "Calloatti.ElectricPurple",
+                                  "Color":  {
+                                                "g":  0,
+                                                "r":  0.82,
+                                                "b":  1,
+                                                "a":  1
+                                            }
+                              },
+    "IlluminationPresetSpec":  {
+                                   "Order":  10040
+                               }
+}

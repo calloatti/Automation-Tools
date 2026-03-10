@@ -1,0 +1,14 @@
+﻿{
+    "IlluminationColorSpec":  {
+                                  "Id":  "Calloatti.Rose",
+                                  "Color":  {
+                                                "g":  0.27,
+                                                "r":  1,
+                                                "b":  0.49,
+                                                "a":  1
+                                            }
+                              },
+    "IlluminationPresetSpec":  {
+                                   "Order":  10210
+                               }
+}

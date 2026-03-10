@@ -13,6 +13,10 @@ namespace Calloatti.AutoTools
     private GameObject _masterContainer;
     private readonly List<GameObject> _lineObjects = new List<GameObject>();
 
+    // Golden Ratio Tracking (Now using an int ID to prevent memory leaks)
+    private readonly Dictionary<int, int> _partitionIndices = new Dictionary<int, int>();
+    private int _nextPartitionIndex = 0;
+
     private void InitializeVisuals()
     {
       _masterContainer = new GameObject("AutoMap_MasterContainer");
@@ -67,19 +71,22 @@ namespace Calloatti.AutoTools
     {
       if (partition == null) return Color.white;
 
-      // Use the partition's internal hash code as the seed.
-      // Guarantees the whole network shares the exact same color.
-      int seed = partition.GetHashCode();
+      // Use the integer hash code as the ID to avoid holding strong object references
+      int partitionId = partition.GetHashCode();
 
-      // Save Unity's random state so we don't mess up game logic
-      var oldState = UnityEngine.Random.state;
+      // Assign a unique, sequential index to the partition ID if we haven't seen it yet
+      if (!_partitionIndices.TryGetValue(partitionId, out int index))
+      {
+        index = _nextPartitionIndex++;
+        _partitionIndices[partitionId] = index;
+      }
 
-      UnityEngine.Random.InitState(seed);
-      Color baseColor = UnityEngine.Random.ColorHSV(0f, 1f, 0.7f, 1f, 0.9f, 1f);
+      // Golden ratio conjugate to maximize hue spacing
+      float goldenRatioConjugate = 0.618033988749895f;
+      float hue = (index * goldenRatioConjugate) % 1f;
 
-      UnityEngine.Random.state = oldState; // Restore it!
-
-      return baseColor;
+      // High saturation (0.85) and value (0.95) to keep lines bright and distinct
+      return Color.HSVToRGB(hue, 0.85f, 0.95f);
     }
 
     private void DrawTransmitterConnections(Automator transmitter)
@@ -122,14 +129,44 @@ namespace Calloatti.AutoTools
       lr.colorGradient = gradient;
 
       float distance = Vector3.Distance(start, end);
-      float arcHeight = Mathf.Max(1.2f, distance * 0.2f);
+
+      // Deterministic random offset (only up) for short distances
+      int seed = unchecked(start.GetHashCode() ^ (end.GetHashCode() * 397));
+      var oldState = UnityEngine.Random.state;
+      UnityEngine.Random.InitState(seed);
+      float randomHeightBoost = UnityEngine.Random.Range(0.0f, 1.5f);
+      UnityEngine.Random.state = oldState;
+
+      // Base height 1.2 gets the random boost. Long distances will naturally override this.
+      float arcHeight = Mathf.Max(1.2f + randomHeightBoost, distance * 0.2f);
+
       lr.positionCount = 21;
+
+      // Calculate Bezier control points for a steeper, non-vertical approach angle
+      Vector3 p0 = start;
+      Vector3 p3 = end;
+
+      Vector3 p1 = Vector3.Lerp(start, end, 0.10f);
+      p1.y += arcHeight * 1.333f;
+
+      Vector3 p2 = Vector3.Lerp(start, end, 0.40f);
+      p2.y += arcHeight * 1.333f;
 
       for (int i = 0; i <= 20; i++)
       {
         float t = i / 20f;
-        Vector3 pos = Vector3.Lerp(start, end, t);
-        pos.y += Mathf.Sin(t * Mathf.PI) * arcHeight;
+        float u = 1f - t;
+        float tt = t * t;
+        float uu = u * u;
+        float uuu = uu * u;
+        float ttt = tt * t;
+
+        // Apply Cubic Bezier formula
+        Vector3 pos = uuu * p0;
+        pos += 3f * uu * t * p1;
+        pos += 3f * u * tt * p2;
+        pos += ttt * p3;
+
         lr.SetPosition(i, pos);
       }
     }
@@ -147,7 +184,7 @@ namespace Calloatti.AutoTools
       //if (blockObject != null) pos.y += blockObject.Blocks.Size.z;
 
       // 3. Add exactly 1 meter higher, as requested
-      pos.y += 1.0f;
+      pos.y += 0.5f;
 
       return pos;
     }
@@ -166,6 +203,11 @@ namespace Calloatti.AutoTools
     private void OnDispose()
     {
       ClearLines();
+
+      // Clear out references so the Garbage Collector can delete old partitions
+      _partitionIndices.Clear();
+      _nextPartitionIndex = 0;
+
       if (_masterContainer != null) UnityEngine.Object.Destroy(_masterContainer);
       if (_lineMaterial != null) UnityEngine.Object.Destroy(_lineMaterial);
     }

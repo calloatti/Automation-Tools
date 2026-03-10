@@ -1,0 +1,14 @@
+﻿{
+    "IlluminationColorSpec":  {
+                                  "Id":  "Calloatti.ElectricBlue",
+                                  "Color":  {
+                                                "g":  0.49,
+                                                "r":  0,
+                                                "b":  1,
+                                                "a":  1
+                                            }
+                              },
+    "IlluminationPresetSpec":  {
+                                   "Order":  10080
+                               }
+}

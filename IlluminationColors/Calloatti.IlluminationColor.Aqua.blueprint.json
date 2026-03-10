@@ -1,0 +1,14 @@
+﻿{
+    "IlluminationColorSpec":  {
+                                  "Id":  "Calloatti.Aqua",
+                                  "Color":  {
+                                                "g":  1,
+                                                "r":  0.1,
+                                                "b":  0.57,
+                                                "a":  1
+                                            }
+                              },
+    "IlluminationPresetSpec":  {
+                                   "Order":  10120
+                               }
+}
