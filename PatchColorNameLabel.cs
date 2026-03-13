@@ -56,15 +56,8 @@ namespace Calloatti.AutoTools
       var initMethod = AccessTools.Method(targetType, "InitializeFragment");
       var updateColorMethod = AccessTools.Method(targetType, "UpdateCustomColor");
 
-      // We need to hook BOTH ShowFragment (when you click) and UpdateFragment (every frame)
-      var showFragmentMethod = AccessTools.Method(targetType, "ShowFragment");
-      var updateFragmentMethod = AccessTools.Method(targetType, "UpdateFragment");
-
       harmony.Patch(initMethod, postfix: new HarmonyMethod(typeof(PatchColorNameLabel), nameof(InitializeLabel)));
       harmony.Patch(updateColorMethod, postfix: new HarmonyMethod(typeof(PatchColorNameLabel), nameof(UpdateLabelText)));
-
-      harmony.Patch(showFragmentMethod, postfix: new HarmonyMethod(typeof(PatchColorNameLabel), nameof(VisibilityPostfix)));
-      harmony.Patch(updateFragmentMethod, postfix: new HarmonyMethod(typeof(PatchColorNameLabel), nameof(VisibilityPostfix)));
     }
 
     private static void InitializeLabel(object __instance, VisualElement __result)
@@ -83,36 +76,6 @@ namespace Calloatti.AutoTools
       _colorNameLabel.style.marginTop = -4;
       _colorNameLabel.style.color = new Color(0.7f, 0.7f, 0.7f);
       rgbContainer.Add(_colorNameLabel);
-    }
-
-    // This handles both showing/hiding AND fixing the vanilla data bug
-    private static void VisibilityPostfix(object __instance)
-    {
-      var type = __instance.GetType();
-      var illuminatorField = type.GetField("_customizableIlluminator", BindingFlags.NonPublic | BindingFlags.Instance);
-      var rootField = type.GetField("_root", BindingFlags.NonPublic | BindingFlags.Instance);
-
-      var illuminator = illuminatorField?.GetValue(__instance) as CustomizableIlluminator;
-      var root = rootField?.GetValue(__instance) as VisualElement;
-
-      if (illuminator == null || root == null) return;
-
-      var indicator = illuminator.GetComponent<Indicator>();
-      if (indicator != null)
-      {
-        bool isReplicating = indicator.IsColorReplicationEnabled;
-
-        if (!isReplicating)
-        {
-          // FIX THE VANILLA BUG: Force the data layer to recognize this is a customized light!
-          illuminator.SetIsCustomized(true);
-          root.style.display = DisplayStyle.Flex;
-        }
-        else
-        {
-          root.style.display = DisplayStyle.None;
-        }
-      }
     }
 
     private static void UpdateLabelText(object __instance)
