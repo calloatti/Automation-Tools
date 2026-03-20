@@ -1,32 +1,18 @@
 ﻿using HarmonyLib;
 using Timberborn.Illumination;
+using Timberborn.BaseComponentSystem;
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections.Generic;
+using System;
 using System.Reflection;
 
 namespace Calloatti.AutoTools
 {
-  public static class PatchColor
+  public static class ColorNamesHelper
   {
-    private static Label _colorNameLabel;
+    public static readonly Dictionary<int, string> ColorNames = new Dictionary<int, string>();
     private static bool _colorsLoaded = false;
-    private static CustomizableIlluminator _cachedIlluminator;
-    private static object _currentFragment;
-
-    private static readonly Dictionary<int, string> ColorNames = new Dictionary<int, string>();
-
-    public static void Apply(Harmony harmony)
-    {
-      var targetType = AccessTools.TypeByName("Timberborn.IlluminationUI.CustomizableIlluminatorFragment");
-      if (targetType == null) return;
-
-      var initMethod = AccessTools.Method(targetType, "InitializeFragment");
-      var updateColorMethod = AccessTools.Method(targetType, "UpdateCustomColor");
-
-      harmony.Patch(initMethod, postfix: new HarmonyMethod(typeof(PatchColor), nameof(InitializeLabel)));
-      harmony.Patch(updateColorMethod, postfix: new HarmonyMethod(typeof(PatchColor), nameof(UpdateLabelText)));
-    }
 
     public static void LoadColorNamesFromText(string text)
     {
@@ -34,7 +20,7 @@ namespace Calloatti.AutoTools
       _colorsLoaded = true;
       try
       {
-        string[] lines = text.Split(new[] { '\r', '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
+        string[] lines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
         foreach (string line in lines)
         {
           if (string.IsNullOrWhiteSpace(line) || line.StartsWith("//") || (line.StartsWith("#") && !line.Contains(","))) continue;
@@ -45,35 +31,127 @@ namespace Calloatti.AutoTools
           }
         }
       }
-      catch (System.Exception e) { Debug.LogError($"[AutoTools] Load Error: {e.Message}"); }
+      catch (Exception e) { Debug.LogError($"[AutoTools] Load Error: {e.Message}"); }
     }
+  }
 
-    private static void InitializeLabel(object __instance, VisualElement __result)
+  public static class ColorUIState
+  {
+    public static Label ColorNameLabel;
+    public static Button ResetButton;
+  }
+
+  [HarmonyPatch(typeof(CustomizableIlluminator), "Apply")]
+  public static class Patch_KeepColorWhenUIClosed
+  {
+    public static bool Prefix(CustomizableIlluminator __instance, IlluminatorColorizer ____illuminatorColorizer, ref Color? ____appliedColor, Color? ____customColor)
     {
-      _currentFragment = __instance;
-      var rgbField = __result.Q<TextField>("Rgb");
-      var rgbContainer = rgbField?.parent;
-      if (rgbContainer == null) return;
-
-      // Event Cleanup
-      if (_cachedIlluminator != null) _cachedIlluminator.AppliedColorChanged -= OnAppliedColorChanged;
-
-      // UI Injection
-      rgbContainer.style.flexDirection = FlexDirection.Column;
-      _colorNameLabel = new Label("Selected Color") { style = { unityTextAlign = TextAnchor.MiddleCenter, color = new Color(0.7f, 0.7f, 0.7f), marginTop = -4 } };
-      rgbContainer.Add(_colorNameLabel);
-
-      // Link to Component
-      var field = __instance.GetType().GetField("_customizableIlluminator", BindingFlags.NonPublic | BindingFlags.Instance);
-      _cachedIlluminator = field?.GetValue(__instance) as CustomizableIlluminator;
-
-      if (_cachedIlluminator != null)
+      Color? colorToApply = ____customColor.HasValue ? ____customColor : null;
+      if (____appliedColor != colorToApply)
       {
-        // This native event captures the Copy-Paste action perfectly
-        _cachedIlluminator.AppliedColorChanged += OnAppliedColorChanged;
+        if (colorToApply.HasValue) ____illuminatorColorizer.SetColor(colorToApply.Value);
+        else ____illuminatorColorizer.ClearColor();
+        ____appliedColor = colorToApply;
+
+        FieldInfo eventField = typeof(CustomizableIlluminator).GetField("AppliedColorChanged", BindingFlags.Instance | BindingFlags.NonPublic);
+        if (eventField != null)
+        {
+          MulticastDelegate eventDelegate = (MulticastDelegate)eventField.GetValue(__instance);
+          if (eventDelegate != null)
+          {
+            foreach (var handler in eventDelegate.GetInvocationList())
+            {
+              handler.Method.Invoke(handler.Target, new object[] { __instance, EventArgs.Empty });
+            }
+          }
+        }
+      }
+      return false;
+    }
+  }
+
+  [HarmonyPatch("Timberborn.IlluminationUI.CustomizableIlluminatorFragment", "InitializeFragment")]
+  public static class Patch_CustomizableIlluminatorFragment_InitializeFragment
+  {
+    [HarmonyPostfix]
+    public static void Postfix(object __instance, VisualElement __result)
+    {
+      var rgbField = __result.Q<TextField>("Rgb");
+      if (rgbField != null)
+      {
+        rgbField.style.flexDirection = FlexDirection.Row;
+        rgbField.style.justifyContent = Justify.Center;
+        rgbField.style.alignItems = Align.Center;
+        var internalLabel = rgbField.Q<Label>();
+        if (internalLabel != null)
+        {
+          internalLabel.style.minWidth = StyleKeyword.Auto;
+          internalLabel.style.width = StyleKeyword.Auto;
+          internalLabel.style.marginRight = 5;
+          internalLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
+        }
       }
 
-      // Hook Hover logic for Preset Buttons
+      var rgbContainer = rgbField?.parent;
+      if (rgbContainer != null && rgbContainer.parent != null)
+      {
+        ColorUIState.ColorNameLabel = new Label("Selected Color")
+        {
+          style = { unityTextAlign = TextAnchor.MiddleCenter, color = new Color(0.7f, 0.7f, 0.7f), marginTop = 2, marginBottom = 2 }
+        };
+        int insertIndex = rgbContainer.parent.IndexOf(rgbContainer);
+        rgbContainer.parent.Insert(insertIndex + 1, ColorUIState.ColorNameLabel);
+      }
+
+      // 1. Create a standard Unity Button
+      ColorUIState.ResetButton = new Button();
+      ColorUIState.ResetButton.text = "Revert to Default Color";
+
+      // 2. Simplified Colors (Using the previous hover color for the static background)
+      Color mainBg = new Color32(45, 75, 60, 255);
+      Color borderColor = new Color32(154, 134, 94, 255); // Game Gold [cite: 75]
+      Color textColor = new Color32(255, 255, 255, 255);  // White [cite: 36]
+
+      // 3. Apply Base Styles
+      ColorUIState.ResetButton.style.backgroundColor = mainBg;
+      ColorUIState.ResetButton.style.color = textColor;
+
+      // Apply 1-pixel crisp borders
+      ColorUIState.ResetButton.style.borderTopColor = borderColor;
+      ColorUIState.ResetButton.style.borderBottomColor = borderColor;
+      ColorUIState.ResetButton.style.borderLeftColor = borderColor;
+      ColorUIState.ResetButton.style.borderRightColor = borderColor;
+
+      ColorUIState.ResetButton.style.borderTopWidth = 1;
+      ColorUIState.ResetButton.style.borderBottomWidth = 1;
+      ColorUIState.ResetButton.style.borderLeftWidth = 1;
+      ColorUIState.ResetButton.style.borderRightWidth = 1;
+
+      ColorUIState.ResetButton.style.borderTopLeftRadius = 1;
+      ColorUIState.ResetButton.style.borderTopRightRadius = 1;
+      ColorUIState.ResetButton.style.borderBottomLeftRadius = 1;
+      ColorUIState.ResetButton.style.borderBottomRightRadius = 1;
+
+      // 4. Layout and Spacing
+      ColorUIState.ResetButton.style.marginTop = 10;
+      ColorUIState.ResetButton.style.marginBottom = 10;
+      ColorUIState.ResetButton.style.alignSelf = Align.Center;
+      ColorUIState.ResetButton.style.unityTextAlign = TextAnchor.MiddleCenter;
+      ColorUIState.ResetButton.style.justifyContent = Justify.Center;
+      ColorUIState.ResetButton.style.width = new Length(90, LengthUnit.Percent);
+      ColorUIState.ResetButton.style.height = 24;
+
+      ColorUIState.ResetButton.RegisterCallback<ClickEvent>(evt =>
+      {
+        var customIllum = AccessTools.Field(__instance.GetType(), "_customizableIlluminator").GetValue(__instance) as CustomizableIlluminator;
+        if (customIllum != null)
+        {
+          customIllum.SetCustomColor(null);
+          Patch_CustomizableIlluminatorFragment_UpdateCustomColor.UpdateLabelText(__instance);
+        }
+      });
+      __result.Add(ColorUIState.ResetButton);
+
       var presetButtonsField = AccessTools.Field(__instance.GetType(), "_presetColorButtons");
       var list = presetButtonsField?.GetValue(__instance) as System.Collections.IList;
       if (list != null)
@@ -81,47 +159,54 @@ namespace Calloatti.AutoTools
         foreach (object item in list)
         {
           var itemType = item.GetType();
-          Color color = (Color)AccessTools.Field(itemType, "Item1").GetValue(item);
-          Button btn = (Button)AccessTools.Field(itemType, "Item2").GetValue(item);
-          Color32 c32 = color;
-          int colorKey = (c32.r << 16) | (c32.g << 8) | c32.b;
-
-          if (ColorNames.TryGetValue(colorKey, out string name))
+          var item1 = AccessTools.Field(itemType, "Item1").GetValue(item);
+          var item2 = (Button)AccessTools.Field(itemType, "Item2").GetValue(item);
+          Color32 c32 = (Color)item1;
+          int colorKey = (c32.r << 16) | (c32.g << 8) | (c32.b);
+          if (ColorNamesHelper.ColorNames.TryGetValue(colorKey, out string name))
           {
-            btn.RegisterCallback<MouseEnterEvent>(evt => { if (_colorNameLabel != null) _colorNameLabel.text = name; });
-            btn.RegisterCallback<MouseLeaveEvent>(evt => UpdateLabelText(__instance));
+            item2.RegisterCallback<MouseEnterEvent>(evt => { if (ColorUIState.ColorNameLabel != null) ColorUIState.ColorNameLabel.text = name; });
+            item2.RegisterCallback<MouseLeaveEvent>(evt => Patch_CustomizableIlluminatorFragment_UpdateCustomColor.UpdateLabelText(__instance));
           }
         }
       }
     }
+  }
 
-    private static void OnAppliedColorChanged(object sender, System.EventArgs e)
+  [HarmonyPatch("Timberborn.IlluminationUI.CustomizableIlluminatorFragment", "ShowFragment")]
+  public static class Patch_CustomizableIlluminatorFragment_ShowFragment
+  {
+    [HarmonyPostfix]
+    public static void Postfix(object __instance)
     {
-      if (_currentFragment == null) return;
-
-      // 1. Update our custom Name Label
-      UpdateLabelText(_currentFragment);
-
-      // 2. Force the Game's UI to refresh its Toggle and Hex field
-      // This calls the internal method that syncs the UI elements with the component's state
-      var refreshMethod = _currentFragment.GetType().GetMethod("ShowFragment", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-      if (refreshMethod != null)
-      {
-        // We pass the existing illuminator back in to trigger the native UI refresh
-        refreshMethod.Invoke(_currentFragment, new object[] { _cachedIlluminator });
-      }
+      Patch_CustomizableIlluminatorFragment_UpdateCustomColor.UpdateLabelText(__instance);
     }
+  }
 
-    private static void UpdateLabelText(object __instance)
+  [HarmonyPatch("Timberborn.IlluminationUI.CustomizableIlluminatorFragment", "UpdateCustomColor")]
+  public static class Patch_CustomizableIlluminatorFragment_UpdateCustomColor
+  {
+    [HarmonyPostfix]
+    public static void Postfix(object __instance) => UpdateLabelText(__instance);
+
+    public static void UpdateLabelText(object __instance)
     {
-      if (_colorNameLabel == null || __instance == null) return;
-      var field = __instance.GetType().GetField("_customizableIlluminator", BindingFlags.NonPublic | BindingFlags.Instance);
-      if (field?.GetValue(__instance) is CustomizableIlluminator illuminator)
+      if (ColorUIState.ColorNameLabel == null || __instance == null) return;
+
+      var customIllumField = AccessTools.Field(__instance.GetType(), "_customizableIlluminator");
+      var illuminator = customIllumField?.GetValue(__instance) as CustomizableIlluminator;
+      if (illuminator == null) return;
+
+      if (ColorUIState.ResetButton != null)
       {
-        Color32 c = illuminator.CustomColor;
-        int key = (c.r << 16) | (c.g << 8) | c.b;
-        _colorNameLabel.text = ColorNames.TryGetValue(key, out string name) ? name : "Custom Hex Color";
+        var internalColorField = AccessTools.Field(typeof(CustomizableIlluminator), "_customColor");
+        Color? currentCustomColor = (Color?)internalColorField.GetValue(illuminator);
+        ColorUIState.ResetButton.SetEnabled(currentCustomColor.HasValue);
       }
+
+      Color32 c = illuminator.CustomColor;
+      int key = (c.r << 16) | (c.g << 8) | c.b;
+      ColorUIState.ColorNameLabel.text = ColorNamesHelper.ColorNames.TryGetValue(key, out string name) ? name : "Custom Hex Color";
     }
   }
 }

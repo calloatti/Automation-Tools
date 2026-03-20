@@ -11,6 +11,21 @@
     <TimberbornPath>C:\Program Files (x86)\Steam\steamapps\common\Timberborn\Timberborn_Data\Managed</TimberbornPath>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PublicizerRuntimeStrategies>Unsafe</PublicizerRuntimeStrategies>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Krafs.Publicizer" Version="2.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Publicize Include="Timberborn.Automation" />
+  </ItemGroup>
+
   <ItemGroup>
     <Reference Include="$(TimberbornPath)\Timberborn.*.dll" />
     <Reference Include="$(TimberbornPath)\Bindito.*.dll" />

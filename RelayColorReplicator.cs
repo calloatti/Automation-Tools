@@ -6,6 +6,7 @@ using Timberborn.BlockSystem;
 using Timberborn.EntitySystem;
 using Timberborn.Illumination;
 using Timberborn.Persistence;
+using Timberborn.RelationSystem;
 using Timberborn.WorldPersistence;
 using UnityEngine;
 
@@ -53,12 +54,12 @@ namespace Calloatti.AutoTools
     {
       ResubscribeToInputColors();
       ReplicateInputColors();
-      _automator.RelationsChanged += OnRelationsChanged;
+      ((IRelationOwner)_automator).RelationsChanged += OnRelationsChanged;
     }
 
     public void OnExitFinishedState()
     {
-      _automator.RelationsChanged -= OnRelationsChanged;
+      ((IRelationOwner)_automator).RelationsChanged -= OnRelationsChanged;
       UnsubscribeFromInputColors();
     }
 
@@ -184,22 +185,20 @@ namespace Calloatti.AutoTools
         return;
       }
 
-      Color finalColor = Color.white;
-      bool colorFound = false;
+      // We now use the new nullable Color API directly
+      Color? finalColor = null;
 
       if (_triggeringInput == 2 && _relay.UsesInputB && _inputBCustomizableIlluminator != null)
       {
         finalColor = _inputBCustomizableIlluminator.CustomColor;
-        colorFound = true;
       }
       else if (_inputACustomizableIlluminator != null)
       {
         // Fallback to A if B is missing or if A is the actual trigger
         finalColor = _inputACustomizableIlluminator.CustomColor;
-        colorFound = true;
       }
 
-      if (colorFound)
+      if (finalColor.HasValue)
       {
         _customizableIlluminator.SetIsCustomized(true);
         _customizableIlluminator.SetCustomColor(finalColor);

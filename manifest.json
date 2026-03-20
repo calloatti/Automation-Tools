@@ -1,9 +1,14 @@
 {
-  "Name": "Automation Tools",
-  "Version": "1.3.5",
-  "Id": "Calloatti.AutoTools",
-  "MinimumGameVersion": "1.0.0.0",
-  "Description": "Automation Tools",
-  "RequiredMods": [{"Id": "Harmony", "MinVersion": "2.4.1"}],
-  "OptionalMods": []
+    "Name": "Automation Tools",
+    "Version": "1.3.7",
+    "Id": "Calloatti.AutoTools",
+    "MinimumGameVersion": "1.0.12.6-e293177-xsw",
+    "Description": "Automation Tools",
+    "RequiredMods": [
+        {
+            "Id": "Harmony",
+            "MinVersion": "2.4.1"
+        }
+    ],
+    "OptionalMods": []
 }

@@ -20,9 +20,7 @@ namespace Calloatti.AutoTools
       if (_harmony == null)
       {
         _harmony = new Harmony(HarmonyId);
-        _harmony.PatchAll(typeof(PatchConfigurator).Assembly);
-        PatchColor.Apply(_harmony);
-
+        _harmony.PatchAll(typeof(PatchConfigurator).Assembly); // This now auto-loads all patches in PatchColor.cs!
         Debug.Log($"[{HarmonyId}] All Harmony patches applied successfully!");
       }
     }
@@ -39,12 +37,12 @@ namespace Calloatti.AutoTools
 
     public void Load()
     {
-      // Updated to match your exact internal asset path!
       var textAsset = _assetLoader.LoadSafe<TextAsset>("resources/autotools.colornames");
 
       if (textAsset != null)
       {
-        PatchColor.LoadColorNamesFromText(textAsset.text);
+        // Notice we call the new helper class here!
+        ColorNamesHelper.LoadColorNamesFromText(textAsset.text);
       }
       else
       {

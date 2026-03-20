@@ -1,6 +1,7 @@
 ﻿using System;
 using Timberborn.Automation;
 using Timberborn.EntitySystem;
+using Timberborn.RelationSystem;
 using Timberborn.SelectionSystem;
 using Timberborn.SingletonSystem;
 
@@ -13,7 +14,7 @@ namespace Calloatti.AutoTools
     {
       if (e.Entity.HasComponent<Automator>())
       {
-        e.Entity.GetComponent<Automator>().RelationsChanged += OnRelationsChanged;
+        ((IRelationOwner)e.Entity.GetComponent<Automator>()).RelationsChanged += OnRelationsChanged;
         MarkDirty();
       }
     }
@@ -23,7 +24,7 @@ namespace Calloatti.AutoTools
     {
       if (e.Entity.HasComponent<Automator>())
       {
-        e.Entity.GetComponent<Automator>().RelationsChanged -= OnRelationsChanged;
+        ((IRelationOwner)e.Entity.GetComponent<Automator>()).RelationsChanged -= OnRelationsChanged;
         MarkDirty();
       }
     }

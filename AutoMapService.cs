@@ -3,6 +3,7 @@ using Calloatti.Config;
 using Timberborn.Automation;
 using Timberborn.PlayerDataSystem;
 using Timberborn.QuickNotificationSystem;
+using Timberborn.RelationSystem;
 using Timberborn.SelectionSystem;
 using Timberborn.SingletonSystem;
 using UnityEngine;
@@ -82,7 +83,7 @@ namespace Calloatti.AutoTools
 
       foreach (Automator automator in _automatorRegistry.Automators)
       {
-        automator.RelationsChanged += OnRelationsChanged;
+        ((IRelationOwner)automator).RelationsChanged += OnRelationsChanged;
       }
 
       RefreshVisuals(suppressInfoNotification: true);
@@ -114,7 +115,7 @@ namespace Calloatti.AutoTools
 
       foreach (Automator automator in _automatorRegistry.Automators)
       {
-        automator.RelationsChanged -= OnRelationsChanged;
+        ((IRelationOwner)automator).RelationsChanged -= OnRelationsChanged;
       }
 
       OnDispose();
