@@ -12,9 +12,9 @@ namespace Calloatti.AutoTools
     [OnEvent]
     public void OnEntityInitialized(EntityInitializedEvent e)
     {
-      if (e.Entity.HasComponent<Automator>())
+      if (e.Entity.TryGetComponent(out Automator automator))
       {
-        ((IRelationOwner)e.Entity.GetComponent<Automator>()).RelationsChanged += OnRelationsChanged;
+        ((IRelationOwner)automator).RelationsChanged += OnRelationsChanged;
         MarkDirty();
       }
     }
@@ -22,9 +22,9 @@ namespace Calloatti.AutoTools
     [OnEvent]
     public void OnEntityDeleted(EntityDeletedEvent e)
     {
-      if (e.Entity.HasComponent<Automator>())
+      if (e.Entity.TryGetComponent(out Automator automator))
       {
-        ((IRelationOwner)e.Entity.GetComponent<Automator>()).RelationsChanged -= OnRelationsChanged;
+        ((IRelationOwner)automator).RelationsChanged -= OnRelationsChanged;
         MarkDirty();
       }
     }

@@ -6,7 +6,8 @@ using UnityEngine;
 
 namespace Calloatti.AutoTools
 {
-  public class AutoMapInputService : ILoadableSingleton, IInputProcessor
+  // 1. Added IDisposable
+  public class AutoMapInputService : ILoadableSingleton, IInputProcessor, IDisposable
   {
     private readonly InputService _inputService;
 
@@ -26,13 +27,18 @@ namespace Calloatti.AutoTools
 
     public bool ProcessInput()
     {
-      // Ensure you register this specific keybinding in your mod's config!
       if (_inputService.IsKeyDown("Calloatti.AutoTools.KeyBind.Toggle.Map"))
       {
         OnToggleAutoMap?.Invoke();
         return false;
       }
       return false;
+    }
+
+    // 2. Added Dispose to clean up the dangling reference
+    public void Dispose()
+    {
+      _inputService.RemoveInputProcessor(this);
     }
   }
 }

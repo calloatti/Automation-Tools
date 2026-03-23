@@ -4,7 +4,10 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>autotools</AssemblyName>
     <RootNamespace>Calloatti.AutoTools</RootNamespace>
-    <Platforms>AnyCPU</Platforms>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+  <Platforms>AnyCPU</Platforms>
     <LangVersion>10.0</LangVersion>
     <Nullable>disable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -23,9 +26,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Publicize Include="Timberborn.AreaSelectionSystem" />
     <Publicize Include="Timberborn.Automation" />
+    <Publicize Include="Timberborn.AutomationUI" />
+    <Publicize Include="Timberborn.AutomationBuildings" />
+    <Publicize Include="Timberborn.BlockSystem" />
+    <Publicize Include="Timberborn.Buildings" />
+    <Publicize Include="Timberborn.BuildingsNavigation" />
+    <Publicize Include="Timberborn.BuildingsReachability" />
+    <Publicize Include="Timberborn.EntitySystem" />
+    <Publicize Include="Timberborn.ForestryUI" />
+    <Publicize Include="Timberborn.Gathering" />
+    <Publicize Include="Timberborn.PathSystem" />
+    <Publicize Include="Timberborn.TerrainSystemRendering" />
+    <Publicize Include="Timberborn.ToolButtonSystem" />
+    <Publicize Include="Timberborn.WaterBuildings" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <Reference Include="$(TimberbornPath)\Timberborn.*.dll" />
     <Reference Include="$(TimberbornPath)\Bindito.*.dll" />
@@ -74,6 +91,7 @@
     <None Update="KeyBindingGroups\**\*"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
     <None Update="KeyBindings\**\*"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
     <None Update="Localizations\**\*"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="NaturalResources\**\*"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
     <None Update="Resources\**\*"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
     <None Update="Sprites\**\*"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
     <None Update="TemplateCollections\**\*"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
@@ -83,6 +101,7 @@
     <None Update="thumbnail.jpg"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
     <None Update="thumbnail.png"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
     <None Update="changelog.txt"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
+    <None Update="SimpleConfig.json"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
   </ItemGroup>
 
   <ItemGroup>
