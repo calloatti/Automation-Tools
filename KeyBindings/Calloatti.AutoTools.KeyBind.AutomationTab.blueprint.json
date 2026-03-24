@@ -1,0 +1,15 @@
+{
+  "KeyBindingSpec": {
+    "Id": "Calloatti.AutoTools.KeyBind.AutomationTab",
+    "GroupId": "KeyBindingGroup.Calloatti.AutoTools",
+    "LocKey": "Calloatti.AutoTools.KeyBind.AutomationTab",
+    "Order": 0,
+    "AllowOtherModifiers": false,
+    "DevModeOnly": false
+  },
+  "PrimaryInputBindingSpec": {
+    "Path": "/Keyboard/F10",
+    "InputModifiers": "None",
+    "Unchangeable": false
+  }
+}

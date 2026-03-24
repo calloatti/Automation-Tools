@@ -1,3 +1,5 @@
 ID,Text,Comment
 KeyBindingGroup.Calloatti.AutoTools,"Automation Tools",
 Calloatti.AutoTools.KeyBind.Toggle.Map,"Toggle Automation Map",
+Calloatti.AutoTools.KeyBind.AutomationTab,"Open Automation Tab",
+Calloatti.AutoTools.Automation.TabName,"Automation",
