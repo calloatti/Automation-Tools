@@ -8,7 +8,7 @@
     "DevModeOnly": false
   },
   "PrimaryInputBindingSpec": {
-    "Path": "/Keyboard/a",
+    "Path": "/Keyboard/.",
     "InputModifiers": "Shift",
     "Unchangeable": false
   }

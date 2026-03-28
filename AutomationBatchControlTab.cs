@@ -85,7 +85,24 @@ namespace Calloatti.AutomationUI
         BatchControlRow headerRow = CreateHeaderRow($"Network ID: {group.Key} ({itemCount})");
         BatchControlRowGroup rowGroup = _rowGroupFactory.CreateUnsorted(headerRow);
 
-        foreach (Automator automator in group)
+        // --- NEW SORTING LOGIC ---
+        // 1. Pure Transmitters (Has output, no input)
+        // 2. Hybrids (Has both input and output)
+        // 3. Terminals (Has input, no output)
+        // 4. Alphabetical by Name
+        var sortedGroup = group.OrderBy(automator =>
+        {
+          bool isTransmitter = automator.IsTransmitter;
+          bool isTerminal = automator.InputConnections.Count > 0; // Terminals have inputs they listen to
+
+          if (isTransmitter && !isTerminal) return 0; // Pure Transmitters first
+          if (isTransmitter && isTerminal) return 1;  // Hybrids second
+          return 2;                                   // Terminals last
+        })
+        .ThenBy(automator => automator.AutomatorName ?? "Unknown");
+        // -------------------------
+
+        foreach (Automator automator in sortedGroup)
         {
           EntityComponent entityComponent = automator.GetComponent<EntityComponent>();
 
@@ -115,7 +132,6 @@ namespace Calloatti.AutomationUI
         yield return rowGroup;
       }
     }
-
     [OnEvent]
     // Listens for building clicks in the 3D world to auto-scroll the UI
     // Listens for building clicks in the 3D world to auto-scroll the UI
