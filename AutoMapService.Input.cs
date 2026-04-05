@@ -12,15 +12,15 @@ namespace Calloatti.AutoTools
       {
         case MapDisplayState.Hidden:
           _currentState = MapDisplayState.Global;
-          _notificationService.SendNotification("Automation Map: GLOBAL");
+          _notificationService.SendNotification(_loc.T("Calloatti.AutoTools.MapState.Global"));
           break;
         case MapDisplayState.Global:
           _currentState = MapDisplayState.Single; // This is the Partition mode
-          _notificationService.SendNotification("Automation Map: PARTITION");
+          _notificationService.SendNotification(_loc.T("Calloatti.AutoTools.MapState.Partition"));
           break;
         case MapDisplayState.Single:
           _currentState = MapDisplayState.Hidden;
-          _notificationService.SendNotification("Automation Map: OFF");
+          _notificationService.SendNotification(_loc.T("Calloatti.AutoTools.MapState.Off"));
           break;
       }
 
@@ -89,7 +89,7 @@ namespace Calloatti.AutoTools
             // Don't overwrite the notification if we just pressed the mode toggle hotkey
             if (!suppressInfoNotification && currentId != -1)
             {
-              _notificationService.SendNotification($"Partition ID: {currentId} | Items: {currentCount}");
+              _notificationService.SendNotification(_loc.T("Calloatti.AutoTools.PartitionInfo", currentId.ToString(), currentCount.ToString()));
             }
           }
         }

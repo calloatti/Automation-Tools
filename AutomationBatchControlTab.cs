@@ -82,7 +82,7 @@ namespace Calloatti.AutomationUI
       {
         int itemCount = group.Count();
 
-        BatchControlRow headerRow = CreateHeaderRow($"Network ID: {group.Key} ({itemCount})");
+        BatchControlRow headerRow = CreateHeaderRow(_loc.T("Calloatti.AutoTools.NetworkIdHeader", group.Key, itemCount));
         BatchControlRowGroup rowGroup = _rowGroupFactory.CreateUnsorted(headerRow);
 
         // --- NEW SORTING LOGIC ---
@@ -188,7 +188,7 @@ namespace Calloatti.AutomationUI
 
     private IBatchControlRowItem CreateNameLabel(EntityComponent entity)
     {
-      string uniqueName = "Unknown Building";
+      string uniqueName = _loc.T("Calloatti.AutoTools.UnknownBuilding");
       string baseName = string.Empty;
       bool isEditable = false;
 
@@ -239,13 +239,13 @@ namespace Calloatti.AutomationUI
       if (automator.IsTransmitter)
       {
         selfIsOnGetter = () => automator.UnfinishedState == AutomatorState.On;
-        tooltipText = "Output Broadcast";
+        tooltipText = _loc.T("Calloatti.AutoTools.OutputBroadcast");
       }
       else
       {
         Automatable automatable = automator.GetComponent<Automatable>();
         selfIsOnGetter = () => automatable != null && automatable.State == ConnectionState.On;
-        tooltipText = "Device State";
+        tooltipText = _loc.T("Calloatti.AutoTools.DeviceState");
       }
 
       yield return BuildSingleLight(
@@ -263,7 +263,7 @@ namespace Calloatti.AutomationUI
           Automator transmitter = connection.Transmitter;
           CustomizableIlluminator colorSource = transmitter.GetComponent<CustomizableIlluminator>();
 
-          string inputTooltip = $"Input: {transmitter.AutomatorName}";
+          string inputTooltip = _loc.T("Calloatti.AutoTools.InputTransmitter", transmitter.AutomatorName);
 
           yield return BuildSingleLight(
               () => transmitter.Enabled,
@@ -306,7 +306,7 @@ namespace Calloatti.AutomationUI
       {
         return automator.Partition.DebuggingId;
       }
-      return "Unpartitioned";
+      return _loc.T("Calloatti.AutoTools.Unpartitioned");
     }
 
     private BatchControlRow CreateHeaderRow(string headerText)
@@ -430,7 +430,7 @@ namespace Calloatti.AutomationUI
         _warningLabel.style.marginRight = 10;
         _warningLabel.style.fontSize = 14f;
         _warningLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
-        tooltipRegistrar.Register(_warningLabel, "Network Conflict / Infinite Loop Detected!");
+        tooltipRegistrar.Register(_warningLabel, _loc.T("Calloatti.AutoTools.NetworkConflict"));
         Root.Add(_warningLabel);
 
         if (_lever != null)
@@ -472,7 +472,7 @@ namespace Calloatti.AutomationUI
         _usagesLabel.style.fontSize = 12f;
         _usagesLabel.style.minWidth = 30f;
         _usagesLabel.style.unityTextAlign = TextAnchor.MiddleRight;
-        tooltipRegistrar.Register(_usagesLabel, "Usages");
+        tooltipRegistrar.Register(_usagesLabel, _loc.T("Calloatti.AutoTools.Usages"));
         Root.Add(_usagesLabel);
       }
       public void UpdateRowItem()

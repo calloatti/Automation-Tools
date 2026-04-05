@@ -7,6 +7,7 @@ using Timberborn.SelectionSystem;
 using Timberborn.ToolSystem;
 using Timberborn.ToolSystemUI;
 using Timberborn.UISound;
+using Timberborn.Localization;
 
 namespace Calloatti.MoveConnections
 {
@@ -17,6 +18,7 @@ namespace Calloatti.MoveConnections
     private readonly ToolService _toolService;
     private readonly CursorService _cursorService;
     private readonly UISoundController _uiSoundController;
+    private readonly ILoc _loc;
 
     private Automator _originAutomator;
 
@@ -25,13 +27,15 @@ namespace Calloatti.MoveConnections
         SelectableObjectRaycaster selectableObjectRaycaster,
         ToolService toolService,
         CursorService cursorService,
-        UISoundController uiSoundController)
+        UISoundController uiSoundController,
+        ILoc loc)
     {
       _inputService = inputService;
       _selectableObjectRaycaster = selectableObjectRaycaster;
       _toolService = toolService;
       _cursorService = cursorService;
       _uiSoundController = uiSoundController;
+      _loc = loc;
     }
 
     public void SwitchTo(Automator originAutomator)
@@ -95,7 +99,7 @@ namespace Calloatti.MoveConnections
     public ToolDescription DescribeTool()
     {
       return new ToolDescription.Builder()
-          .AddPrioritizedSection("Select destination building to move connections to.")
+          .AddPrioritizedSection(_loc.T("Calloatti.AutoTools.MoveConnections.ToolDescription"))
           .Build();
     }
   }

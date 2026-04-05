@@ -6,6 +6,7 @@ using Timberborn.QuickNotificationSystem;
 using Timberborn.RelationSystem;
 using Timberborn.SelectionSystem;
 using Timberborn.SingletonSystem;
+using Timberborn.Localization;
 using UnityEngine;
 using System;
 using System.IO;
@@ -26,6 +27,7 @@ namespace Calloatti.AutoTools
     private readonly AutoMapInputService _inputService;
     private readonly QuickNotificationService _notificationService;
     private readonly EntitySelectionService _selectionService;
+    private readonly ILoc _loc;
 
     private MapDisplayState _currentState = MapDisplayState.Hidden;
     private Automator _singleVisualizedAutomator;
@@ -41,13 +43,15 @@ namespace Calloatti.AutoTools
         EventBus eventBus,
         AutoMapInputService inputService,
         QuickNotificationService notificationService,
-        EntitySelectionService selectionService)
+        EntitySelectionService selectionService,
+        ILoc loc)
     {
       _automatorRegistry = automatorRegistry;
       _eventBus = eventBus;
       _inputService = inputService;
       _notificationService = notificationService;
       _selectionService = selectionService;
+      _loc = loc;
     }
 
     public void Load()

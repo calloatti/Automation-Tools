@@ -4,6 +4,7 @@ using Timberborn.EntityPanelSystem;
 using Timberborn.TooltipSystem;
 using UnityEngine.UIElements;
 using Timberborn.CoreUI;
+using Timberborn.Localization;
 
 namespace Calloatti.MoveConnections
 {
@@ -11,13 +12,15 @@ namespace Calloatti.MoveConnections
   {
     private readonly MoveConnectionsTool _moveConnectionsTool;
     private readonly ITooltipRegistrar _tooltipRegistrar;
+    private readonly ILoc _loc;
     private VisualElement _root;
     private Automator _automator;
 
-    public MoveConnectionsFragment(MoveConnectionsTool moveConnectionsTool, ITooltipRegistrar tooltipRegistrar)
+    public MoveConnectionsFragment(MoveConnectionsTool moveConnectionsTool, ITooltipRegistrar tooltipRegistrar, ILoc loc)
     {
       _moveConnectionsTool = moveConnectionsTool;
       _tooltipRegistrar = tooltipRegistrar;
+      _loc = loc;
     }
 
     public VisualElement InitializeFragment()
@@ -39,7 +42,7 @@ namespace Calloatti.MoveConnections
       _root = moveButton;
 
       // Register the tooltip
-      _tooltipRegistrar.Register(_root, "Move Connections");
+      _tooltipRegistrar.Register(_root, _loc.T("Calloatti.AutoTools.MoveConnections.Tooltip"));
 
       _root.ToggleDisplayStyle(false);
 
