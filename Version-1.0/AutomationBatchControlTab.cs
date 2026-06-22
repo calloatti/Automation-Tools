@@ -22,7 +22,8 @@ namespace Calloatti.AutomationUI
   public class AutomationBatchControlTab : BatchControlTab
   {
     private readonly BatchControlRowGroupFactory _rowGroupFactory;
-    private readonly VisualElementLoader _visualElementLoader;
+    // Added 'new' to explicitly hide the base class's publicized member of the same name
+    private new readonly VisualElementLoader _visualElementLoader;
     private readonly AutomatorRegistry _automatorRegistry;
     private readonly EntitySelectionService _entitySelectionService;
     private readonly ITooltipRegistrar _tooltipRegistrar;
@@ -54,7 +55,7 @@ namespace Calloatti.AutomationUI
       _loc = loc;
     }
 
-    protected override IEnumerable<BatchControlRowGroup> GetRowGroups(IEnumerable<EntityComponent> entities)
+    public override IEnumerable<BatchControlRowGroup> GetRowGroups(IEnumerable<EntityComponent> entities)
     {
       // Clear our lookup dictionary every time the tab repopulates
       _rowRoots.Clear();
