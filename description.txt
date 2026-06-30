@@ -1,0 +1,28 @@
+Seems to be 1.1 update compatible
+
+Ever get lost in a spaghetti web of water sensors, memory blocks, and floodgates? AutoMap is here to help! 
+
+Automation Map is a lightweight visualization tool that draws 3D parabolic arcs between your connected automation buildings, allowing you to instantly debug and trace your logic circuits at a glance.
+
+[Shift + .] for Automation Map. 
+
+NOTE: SHIFT+. was probably not the best choice for the default hotkey, due to the fact that some people have problems depending on the keyboard layout. Just set the keybind again and it will work.
+
+[h2]Features[/h2]
+[list]
+[*] [b]Smart 3-State Toggle:[/b] Cycle between viewing a specific circuit, all circuits globally, or hiding the map completely.
+[*] [b]Single Partition Inspection:[/b] Select an automation building and trigger the hotkey to view [i]only[/i] the inputs and outputs for that specific network (Partition). You can click around your settlement to inspect things without losing your visualizer, and click another sensor to seamlessly switch to its network.
+[*] [b]Color-Coded Networks:[/b] Every network gets a unique, consistent color so you can easily trace which sensor is talking to which floodgate.
+[*] [b]True 3D Arcs:[/b] Lines are drawn as trajectories from the exact top-center of the buildings' 3D footprints, making it easy to read even in highly vertical settlements.
+[*] [b]Network IDs:[/b] When inspecting a single circuit, the game will notify you of the exact "Partition ID", letting you know for sure if two buildings are on the exact same isolated grid.
+[*] [b]Performance Friendly:[/b] Zero performance overhead when turned off. The mod only calculates and draws meshes when the map is actively visible.
+[/list]
+
+[h2]How to Use[/h2]
+[olist]
+[*] Select any automation building (Sensor, Relay, Timer, etc.) and press the hotkey Shift + . to view its network.
+[*] Press it again to view the Global map, and a third time to turn it off.
+[/olist]
+
+
+https://github.com/calloatti/Automation-Tools
