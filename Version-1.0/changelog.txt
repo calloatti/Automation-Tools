@@ -1,79 +1,60 @@
---------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.4.4
+Game Version: 1.0.0.0 - Mod Version: 1.4.4
 - Fix bug all networks visible when loading game
 --------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.4.3
+Game Version: 1.0.0.0 - Mod Version: 1.4.3
 - Localization updates
 --------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.4.2
+Game Version: 1.0.0.0 - Mod Version: 1.4.2
 - Add move connections
 --------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.4.1
+Game Version: 1.0.0.0 - Mod Version: 1.4.1
 - Refactored config file handling
 --------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.4.0
+Game Version: 1.0.0.0 - Mod Version: 1.4.0
 - Added Automation Tab
 --------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.3.9
+Game Version: 1.0.0.0 - Mod Version: 1.3.9
 - Removed reflection
 --------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.3.8
+Game Version: 1.0.0.0 - Mod Version: 1.3.8
 - Removed all extra features
 --------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.3.7
+Game Version: 1.0.0.0 - Mod Version: 1.3.7
 - Adds pause to Automators
 --------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.3.6
+Game Version: 1.0.0.0 - Mod Version: 1.3.6
 - Fix crash due to game update
 --------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.3.5
+Game Version: 1.0.0.0 - Mod Version: 1.3.5
 - Added Replicate input color feature to Relays
 --------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.3.4
+Game Version: 1.0.0.0 - Mod Version: 1.3.4
 - Added lines show on/off state
 --------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.3.3
+Game Version: 1.0.0.0 - Mod Version: 1.3.3
 - Changed name to Automation Tools
 - Tuned start/end points
 - Optimizations
 --------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.3.2
+Game Version: 1.0.0.0 - Mod Version: 1.3.2
 - Really fixed using RelationsChanged properly
 - Saves setting when changing maps
 --------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.3.1
+Game Version: 1.0.0.0 - Mod Version: 1.3.1
 - Fixed using RelationsChanged properly
 --------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.3.0
+Game Version: 1.0.0.0 - Mod Version: 1.3.0
 - Refactored regeneration and added caching
 --------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.2.1
+Game Version: 1.0.0.0 - Mod Version: 1.2.1
 - Removed patch for visibility bug
 --------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.2.0
+Game Version: 1.0.0.0 - Mod Version: 1.2.0
 - Refactoring, added preview
 --------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.0.1
+Game Version: 1.0.0.0 - Mod Version: 1.0.1
 - Added cycling
 --------------------------------------------------------------------------------
-Game Version: 1.0.0.0
-Mod Version: 1.0.0
+Game Version: 1.0.0.0 - Mod Version: 1.0.0
 - Alpha release
+--------------------------------------------------------------------------------
