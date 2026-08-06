@@ -7,9 +7,5 @@
     "AllowOtherModifiers": false,
     "DevModeOnly": false
   },
-  "PrimaryInputBindingSpec": {
-    "Path": "/Keyboard/F10",
-    "InputModifiers": "None",
-    "Unchangeable": false
-  }
+  "PrimaryInputBindingSpec": {"Path": "/Keyboard/F10", "InputModifiers": "None", "Unchangeable": false}
 }
