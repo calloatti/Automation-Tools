@@ -30,3 +30,8 @@ Adds automation batch control panel, auto-mapping tools, and move-connections to
 | `AutoMapHoverService.cs` | Hover detection for auto-map |
 | `AutoMapInputService.cs` | Input processor for auto-map |
 | `AutoMapStateListener.cs` | State change listener |
+
+## Hard Rule
+DO NOT EVER TOUCH THE DEPLOY FOLDER.
+
+BUILD DOES EVERYTHING, NEVER EVER MESS WITH THE DEPLOY PROCESS.
