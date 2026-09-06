@@ -29,7 +29,7 @@ namespace Calloatti.AutomationUI
         BatchControlModule.Builder builder = new BatchControlModule.Builder();
 
         // Add our custom tab. '8' puts it at the far right of the top menu tabs.
-        builder.AddTab(_automationTab, 99);
+        builder.AddTab(_automationTab, 20);
 
         return builder.Build();
       }

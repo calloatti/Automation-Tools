@@ -1,2 +1,4 @@
-* Game Version: 1.0.0.0 - Mod Version: 1.4.5
-- SimpleConfig UI integration
+* Game Version: 1.1.2.4 - Mod Version: 1.4.7
+- Changed tab index to 20
+* Game Version: 1.0.13.1 - Mod Version: 1.4.7
+- Changed tab index to 20
